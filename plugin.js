@@ -1,20 +1,25 @@
-// Kino plugin: HentaiJK v1.3.0
+// Kino plugin: HentaiJK v1.4.0
 // Miniaturas: data-animepic / animes/image/ (NUNCA jkvideo_ como póster de serie)
 // Home: series únicas; más secciones; Magi por defecto (rápido)
 
 const BASE = "https://hentaijk.com";
 const CDN = "https://cdn.hentaijk.com";
 
+// Géneros verificados en hentaijk.com (200). Sin filas 404.
+// "episodios-nuevos" se arma aparte (primera fila).
+// home() deduplica series entre filas (cada serie solo en la primera donde aparece).
 const SECTIONS = [
-  // "episodios-nuevos" se arma aparte (primera fila) desde el home
-  { id: "recientes", title: "Recientes", path: "/", source: "home" },
-  { id: "top", title: "Más votados", path: "/top", source: "cards" },
-  { id: "sin-censura", title: "Sin censura", path: "/genero/sin-censura", source: "cards" },
-  { id: "ahegao", title: "Ahegao", path: "/genero/ahegao", source: "cards" },
-  { id: "incesto", title: "Incesto", path: "/genero/incesto", source: "cards" },
-  { id: "colegiala", title: "Colegiala", path: "/genero/colegiala", source: "cards" },
-  { id: "milf", title: "MILF", path: "/genero/milf", source: "cards" },
-  { id: "vanilla", title: "Vanilla", path: "/genero/vanilla", source: "cards" },
+  { id: "top", title: "Más votados", path: "/top" },
+  { id: "sin-censura", title: "Sin censura", path: "/genero/sin-censura" },
+  { id: "ahegao", title: "Ahegao", path: "/genero/ahegao" },
+  { id: "incesto", title: "Incesto", path: "/genero/incesto" },
+  { id: "vanilla", title: "Vanilla", path: "/genero/vanilla" },
+  { id: "yuri", title: "Yuri", path: "/genero/yuri" },
+  { id: "yaoi", title: "Yaoi", path: "/genero/yaoi" },
+  { id: "netorare", title: "Netorare", path: "/genero/netorare" },
+  { id: "shota", title: "Shota", path: "/genero/shota" },
+  { id: "maids", title: "Maids", path: "/genero/maids" },
+  { id: "bondage", title: "Bondage", path: "/genero/bondage" },
 ];
 
 function log(...a) {
@@ -284,12 +289,24 @@ function parseHomeRecent(html) {
 
 export async function home() {
   const rows = [];
-  let homeHtml = null;
+  // Una serie solo en la primera fila donde aparezca (sin repetir entre secciones)
+  const seenGlobal = new Set();
 
-  // 1) Primera fila: episodios recién agregados → abren la SERIE (todos los caps)
+  function dedupe(items) {
+    const out = [];
+    for (const it of items) {
+      if (!it || !it.id) continue;
+      if (seenGlobal.has(it.id)) continue;
+      seenGlobal.add(it.id);
+      out.push(it);
+    }
+    return out;
+  }
+
+  // 1) Episodios recién agregados → abren la SERIE (todos los caps)
   try {
-    homeHtml = await fetchHtml(BASE + "/");
-    const nuevos = parseNewEpisodes(homeHtml);
+    const homeHtml = await fetchHtml(BASE + "/");
+    const nuevos = dedupe(parseNewEpisodes(homeHtml));
     log("home episodios-nuevos", nuevos.length);
     if (nuevos.length) {
       rows.push({
@@ -304,12 +321,11 @@ export async function home() {
     log("home episodios-nuevos ERROR", e && e.message);
   }
 
+  // 2) Rankings y géneros (páginas distintas; sin solapar con la fila anterior)
   for (const sec of SECTIONS) {
     try {
-      let html;
-      if (sec.path === "/" && homeHtml) html = homeHtml;
-      else html = await fetchHtml(BASE + sec.path);
-      const items = parseSeriesCards(html);
+      const html = await fetchHtml(BASE + sec.path);
+      const items = dedupe(parseSeriesCards(html));
       log("home", sec.id, items.length);
       if (items.length) {
         rows.push({

@@ -1,11 +1,11 @@
 {
   "id": "hentaijk",
   "name": "HentaiJK",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "apiVersion": 6,
   "entry": "plugin.js",
-  "description": "HentaiJK: fila Episodios nuevos (abre la serie con todos los caps), miniaturas correctas, Magi por defecto.",
-  "author": "community",
+  "description": "Hecho por Hotaru Yume. HentaiJK: episodios nuevos, m\u00e1s votados y g\u00e9neros sin duplicados. Todos los cap\u00edtulos por serie, selector de servidor.",
+  "author": "Hotaru Yume",
   "homepage": "https://hentaijk.com",
   "hosts": [
     "hentaijk.com",
