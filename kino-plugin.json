@@ -4,8 +4,9 @@
   "version": "1.4.0",
   "apiVersion": 6,
   "entry": "plugin.js",
-  "description": "Hecho por Hotaru Yume. HentaiJK: episodios nuevos, m\u00e1s votados y g\u00e9neros sin duplicados. Todos los cap\u00edtulos por serie, selector de servidor.",
+  "description": "Videos de HentaiJK: episodios nuevos, m\u00e1s votados y g\u00e9neros sin duplicados. Todos los cap\u00edtulos por serie, selector de servidor.",
   "author": "Hotaru Yume",
+  "creator": "hotaruyume",
   "homepage": "https://hentaijk.com",
   "hosts": [
     "hentaijk.com",
@@ -29,9 +30,7 @@
   "icon": "icon.png",
   "categories": [
     "adult",
-    "anime",
-    "series"
-  ],
+   ],
   "streamHosts": "any",
   "settings": [
     {
