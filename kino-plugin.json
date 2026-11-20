@@ -29,7 +29,7 @@
   "color": "#EC4899",
   "icon": "icon.png",
   "categories": [
-    "adult",
+    "adult"
    ],
   "streamHosts": "any",
   "settings": [
